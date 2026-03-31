@@ -1,4 +1,4 @@
-# GZH Content Studio
+# WeChat Official Account Content Studio
 
 ## 项目来源与致谢
 
