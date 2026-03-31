@@ -1,4 +1,14 @@
-# WeWrite
+# GZH Content Studio
+
+## 项目来源与致谢
+
+本仓库是我在尊重原始开源项目及其许可的前提下，结合自己在公众号内容生产、排版规范、视觉提示词、质量门禁和发布流程上的想法做的整合与修改版本。
+
+- 原始内容工作流来源之一：[`oaker-io/wewrite`](https://github.com/oaker-io/wewrite)，作者 / 维护者为 GitHub 组织 `oaker-io`
+- 原始 Markdown 转公众号排版能力来源之一：[`geekjourneyx/md2wechat-skill`](https://github.com/geekjourneyx/md2wechat-skill)，作者 / 维护者为 GitHub 用户 `geekjourneyx`
+- 当前仓库不是对原项目的原样镜像，而是结合我自己的使用场景做的二次开发与流程重组
+
+更完整的说明见 [NOTICE.md](NOTICE.md)。
 
 公众号文章全流程 AI Skill —— 从热点抓取到草稿箱推送，一句话搞定。
 
