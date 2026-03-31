@@ -1,0 +1,7 @@
+<div style="background-color:#f5f7fb;padding:40px 10px;">
+  <section style="max-width:800px;margin:0 auto;padding:28px;background-color:#ffffff;border:1px solid rgba(74,124,155,0.08);box-shadow:0 8px 28px rgba(58,65,80,0.06);border-radius:14px;">
+    <h1 style="margin:0 0 18px;color:#24384d;font-size:30px;line-height:1.35;">{{TITLE}}</h1>
+    <p style="margin:0 0 18px;color:#5f6f80;font-size:15px;line-height:1.8;">{{DIGEST}}</p>
+    <section style="margin-top:22px;">{{CONTENT}}</section>
+  </section>
+</div>

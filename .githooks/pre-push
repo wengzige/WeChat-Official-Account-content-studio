@@ -1,0 +1,16 @@
+#!/bin/sh
+
+if command -v python >/dev/null 2>&1; then
+  exec python scripts/git_privacy_guard.py --pre-push
+fi
+
+if command -v python3 >/dev/null 2>&1; then
+  exec python3 scripts/git_privacy_guard.py --pre-push
+fi
+
+if command -v py >/dev/null 2>&1; then
+  exec py -3 scripts/git_privacy_guard.py --pre-push
+fi
+
+echo "Push blocked: Python runtime not found for privacy guard." >&2
+exit 1
