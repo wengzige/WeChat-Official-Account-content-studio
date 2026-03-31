@@ -1,4 +1,5 @@
 import json
+import re
 
 import requests
 from dataclasses import dataclass
@@ -16,6 +17,50 @@ class ImagePostResult:
     image_count: int
 
 
+_FORBIDDEN_SCAFFOLD_MARKERS = (
+    "公众号草稿模板",
+    "模板说明",
+    "把准备好的正文 HTML 放在这里",
+    "如果要自动上传正文图片并替换成微信地址",
+    "兼容提醒",
+)
+
+def _has_suspicious_mojibake(text: str) -> bool:
+    consecutive = 0
+    total = 0
+    for ch in text:
+        codepoint = ord(ch)
+        if 0x0080 <= codepoint <= 0x00FF:
+            consecutive += 1
+            total += 1
+            if consecutive >= 3 or total >= 6:
+                return True
+        else:
+            consecutive = 0
+    return False
+
+
+def _assert_clean_publish_payload(title: str, digest: str, html: str) -> None:
+    """Block obviously dirty or garbled content before creating drafts."""
+    joined = "\n".join(part for part in (title, digest, html) if part)
+
+    if "\ufffd" in joined:
+        raise ValueError("Publish blocked: replacement character � detected in payload")
+
+    if "<!--" in html:
+        raise ValueError("Publish blocked: HTML comments detected in payload")
+
+    if re.search(r"\?{3,}", joined):
+        raise ValueError("Publish blocked: suspicious garbled text detected (three or more consecutive question marks)")
+
+    if _has_suspicious_mojibake(joined):
+        raise ValueError("Publish blocked: suspicious mojibake text detected (broken encoding pattern)")
+
+    for marker in _FORBIDDEN_SCAFFOLD_MARKERS:
+        if marker in joined:
+            raise ValueError(f"Publish blocked: template scaffolding text detected: {marker}")
+
+
 def create_draft(
     access_token: str,
     title: str,
@@ -30,6 +75,8 @@ def create_draft(
     Returns DraftResult.
     Raise ValueError on error (errcode present and != 0).
     """
+    _assert_clean_publish_payload(title=title, digest=digest, html=html)
+
     article = {
         "title": title,
         "author": author or "",

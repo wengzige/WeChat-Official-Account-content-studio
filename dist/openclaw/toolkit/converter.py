@@ -12,6 +12,7 @@ from typing import Optional
 
 import markdown
 from bs4 import BeautifulSoup
+from bs4.element import Comment
 
 from theme import Theme, load_theme, get_inline_css_rules
 
@@ -57,6 +58,9 @@ class WeChatConverter:
 
         # Parse Markdown → HTML
         html = self._markdown_to_html(markdown_text)
+
+        # Strip HTML comments so editor notes never leak into previews/drafts.
+        html = self._strip_html_comments(html)
 
         # Enhance code blocks (add data-lang attribute)
         html = self._enhance_code_blocks(html)
@@ -145,6 +149,13 @@ class WeChatConverter:
                     if cls.startswith("language-"):
                         pre["data-lang"] = cls.replace("language-", "")
                         break
+        return str(soup)
+
+    def _strip_html_comments(self, html: str) -> str:
+        """Remove HTML comments so internal notes do not appear in output."""
+        soup = BeautifulSoup(html, "html.parser")
+        for comment in soup.find_all(string=lambda text: isinstance(text, Comment)):
+            comment.extract()
         return str(soup)
 
     def _process_images(self, html: str) -> tuple[str, list[str]]:
